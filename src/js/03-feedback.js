@@ -1,5 +1,7 @@
 import throttle from 'lodash.throttle';
 
+window.global = window;
+
 const refs = {
   input: document.querySelector('.feedback-form input'),
   textarea: document.querySelector('.feedback-form textarea'),
