@@ -1,8 +1,6 @@
 import throttle from 'lodash.throttle';
 
 const refs = {
-  input: document.querySelector('.feedback-form input'),
-  textarea: document.querySelector('.feedback-form textarea'),
   form: document.querySelector('.feedback-form'),
 };
 const LSKey = 'feedback-form-state';
@@ -12,33 +10,26 @@ const inputObj = {
   message: '',
 };
 
-refs.input.addEventListener('input', handlerInputEmail);
-refs.textarea.addEventListener('input', handlerInputMessage);
+refs.form.addEventListener('input', handlerInput);
 refs.form.addEventListener('submit', handlerSubmit);
-
-const setItemToLS = throttle(() => {
-  localStorage.setItem(LSKey, JSON.stringify(inputObj));
-}, 500);
 
 const storedData = localStorage.getItem(LSKey);
 if (storedData) {
   const parsedData = JSON.parse(storedData);
   inputObj.email = parsedData.email;
   inputObj.message = parsedData.message;
-  refs.input.value = inputObj.email;
-  refs.textarea.value = inputObj.message;
+  refs.form.elements.email.value = inputObj.email;
+  refs.form.elements.message.value = inputObj.message;
 }
 
-function handlerInputEmail(evt) {
-  let inputEmail = evt.currentTarget.value;
-  inputObj.email = inputEmail;
-  setItemToLS();
-}
+const setItemToLS = throttle(() => {
+  localStorage.setItem(LSKey, JSON.stringify(inputObj));
+}, 500);
 
-function handlerInputMessage(evt) {
-  let inputMessage = evt.currentTarget.value;
-  inputObj.message = inputMessage;
-  setItemToLS();
+function handlerInput(evt) {
+  inputObj.email = evt.currentTarget.elements.email.value;
+  inputObj.message = evt.currentTarget.elements.message.value;
+  setItemToLS(inputObj);
 }
 
 function handlerSubmit(evt) {
